@@ -22,15 +22,16 @@ keyList = ["property_type","subproperty_type","locality","construction_year","to
 
 house = {key: None for key in keyList}
 
-st.markdown('<h3 align="center">Belgium Property Price Prediction Model</h3>', unsafe_allow_html=True)
+#st.markdown('<h3 align="center">Belgium Property Price Prediction Model</h3>', unsafe_allow_html=True)
 
-#st.write("Belgium Price Prediction Model")
+st.header(":house_buildings: Belgium Price Prediction Model")
+st.markdown("Enter the values to get a price prediction")
 with st.form("my_form"):
-    st.write("Enter the values to get a price prediction:")
+
     house["property_type"]=st.radio('Property type:', ['House', 'Apartment'])
     house["subproperty_type"] = st.selectbox('Sub Property type:', ['APARTMENT', 'APARTMENT_BLOCK', 'BUNGALOW', 'CASTLE', 'CHALET', 'COUNTRY_COTTAGE', 'DUPLEX', 'EXCEPTIONAL_PROPERTY', 'FARMHOUSE', 'FLAT_STUDIO', 'GROUND_FLOOR', 'HOUSE', 'KOT', 'LOFT', 'MANOR_HOUSE', 'MANSION', 'MIXED_USE_BUILDING', 'OTHER_PROPERTY', 'PENTHOUSE', 'SERVICE_FLAT', 'TOWN_HOUSE', 'TRIPLEX', 'VILLA'])
     house["locality"]=st.selectbox('Locality:', ['Aalst', 'Antwerp', 'Arlon', 'Ath', 'Bastogne', 'Brugge', 'Brussels', 'Charleroi', 'Dendermonde', 'Diksmuide', 'Dinant', 'Eeklo', 'Gent', 'Halle-Vilvoorde', 'Hasselt', 'Huy', 'Ieper', 'Kortrijk', 'Leuven', 'Liège', 'Maaseik', 'Marche-en-Famenne', 'Mechelen', 'Mons', 'Mouscron', 'Namur', 'Neufchâteau', 'Nivelles', 'Oostend', 'Oudenaarde', 'Philippeville', 'Roeselare', 'Sint-Niklaas', 'Soignies', 'Thuin', 'Tielt', 'Tongeren', 'Tournai', 'Turnhout', 'Verviers', 'Veurne', 'Virton', 'Waremme'])
-    house["construction_year"]=st.number_input('Construction Year:')
+    house["construction_year"]=st.number_input('Construction Year:',1000,2024)
     house["total_area_sqm"]=st.number_input('Total area:',format="%.2f")
     house["nbr_bedrooms"]=st.number_input('Number of Bedrooms:')
     house["kitchen_type"]=st.selectbox('Kitchen Level:', ['NOT_INSTALLED','UNINSTALLED','INSTALLED','SEMI_EQUIPPED','HYPER_EQUIPPED'])
@@ -52,5 +53,5 @@ with st.form("my_form"):
         model=joblib.load(filename='./models/cat_boost.pkl')
         processed=pre_process_cat(data)
         p=model.predict(processed[model.feature_names_])
-        st.write(f"price:{p[0]}")
+        st.title(f":moneybag: Price: € {round(p[0],2)}")
 
