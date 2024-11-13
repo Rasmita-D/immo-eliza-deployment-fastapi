@@ -11,7 +11,7 @@ WORKDIR /app
 # Copy all the files in the current directory in /app
 COPY main.py .
 COPY models/ ./models/
-
+COPY requirements.txt .
 
 # Update pip
 RUN pip install --upgrade pip
