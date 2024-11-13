@@ -7,13 +7,13 @@ import joblib
 def pre_process_cat(data):       
     #Encoding the kitchen field
     data['equipped_kitchen']=data['kitchen_type']
-    kit_encoder = joblib.load(filename='../models/kitchen_ordinal.pkl')
+    kit_encoder = joblib.load(filename='./models/kitchen_ordinal.pkl')
     data['kitchen_type']=kit_encoder.transform(data[['equipped_kitchen']])
     data=data.drop('equipped_kitchen',axis=1)
 
     #Encoding the state of building field
     data['state_building']=data['state_of_building']
-    state_encoder = joblib.load(filename='../models/state_building_ordinal.pkl')
+    state_encoder = joblib.load(filename='./models/state_building_ordinal.pkl')
     data['state_of_building']=state_encoder.transform(data[['state_building']])
     data=data.drop('state_building',axis=1)
     return data
@@ -47,7 +47,7 @@ with st.form("my_form"):
     submitted = st.form_submit_button("Submit")
     if submitted:
         data=pd.DataFrame(house,index=[0])
-        model=joblib.load(filename='../models/cat_boost.pkl')
+        model=joblib.load(filename='./models/cat_boost.pkl')
         processed=pre_process_cat(data)
         p=model.predict(processed[model.feature_names_])
         st.write(f"price:{p[0]}")
