@@ -7,11 +7,12 @@ RUN mkdir /app
 # Define /app as the working directory
 WORKDIR /app
 
-# Update pip
-RUN pip install --upgrade pip
 
 # Copy all the files in the current directory in /app
 COPY . /app/
+
+# Update pip
+RUN pip install --upgrade pip
 
 # Install dependencies from "requirements.txt"
 RUN pip install -r requirements.txt
