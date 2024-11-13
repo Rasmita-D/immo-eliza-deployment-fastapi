@@ -22,7 +22,9 @@ keyList = ["property_type","subproperty_type","locality","construction_year","to
 
 house = {key: None for key in keyList}
 
-st.write("Belgium Price Prediction Model")
+st.markdown('<h3 align="center">Belgium Property Price Prediction Model</h3>', unsafe_allow_html=True)
+
+#st.write("Belgium Price Prediction Model")
 with st.form("my_form"):
     st.write("Enter the values to get a price prediction:")
     house["property_type"]=st.radio('Property type:', ['House', 'Apartment'])
