@@ -33,7 +33,6 @@ async def read_values(item:Item):
     model=joblib.load(filename='./models/cat_boost.pkl')
     processed=pre_process_cat(data)
     p=model.predict(processed[model.feature_names_])
-    print("Inside here!")
     return {"price":p[0]}
  
 

@@ -9,7 +9,11 @@ WORKDIR /app
 
 
 # Copy all the files in the current directory in /app
-COPY . /app/
+COPY main.py .
+COPY models/ ./models/
+COPY streamlit/ ./streamlit/
+COPY README.md .
+COPY structure.txt .
 
 # Update pip
 RUN pip install --upgrade pip
