@@ -1,14 +1,14 @@
 # Starts from the python 3.10 official docker image
 FROM python:3.12-slim
 
-# Create a folder "app" at the root of the image
-RUN mkdir /api
+# Create a folder "api" at the root of the image
+RUN mkdir /app
 
 # Define /app as the working directory
-WORKDIR /api
+WORKDIR /app
 
-# Copy all the files in the current directory in /app
-COPY . /api
+# Copy all the files in the current directory in /api
+COPY . /app
 
 # Update pip
 RUN pip install --upgrade pip
