@@ -7,17 +7,15 @@ RUN mkdir /app
 # Define /app as the working directory
 WORKDIR /app
 
+# Copy the requirements file into the container
+COPY requirements.txt .
+
+# Install the dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy all the files in the current directory in /app
 COPY main.py .
 COPY models/ ./models/
-COPY requirements.txt .
-
-# Update pip
-RUN pip install --upgrade pip
-
-# Install dependencies from "requirements.txt"
-RUN pip install -r requirements.txt
 
 # Run the app
 # Set host to 0.0.0.0 to make it run on the container's network
