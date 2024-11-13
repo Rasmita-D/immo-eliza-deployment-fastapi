@@ -30,7 +30,7 @@ class Item(BaseModel):
 @app.post("/get_price/")
 async def read_values(item:Item):
     data=pd.DataFrame(item.model_dump(),index=[0])
-    model=joblib.load(filename='./models/cat_boost.pkl')
+    model=joblib.load(filename='../models/cat_boost.pkl')
     processed=pre_process_cat(data)
     p=model.predict(processed[model.feature_names_])
     return {"price":p[0]}
@@ -41,19 +41,19 @@ def pre_process_predict(data):
         
         #Encoding the kitchen field
         data['equipped_kitchen']=data['kitchen_type']
-        kit_encoder = joblib.load(filename='./models/kitchen_ordinal.pkl')
+        kit_encoder = joblib.load(filename='../models/kitchen_ordinal.pkl')
         data['kitchen_type']=kit_encoder.transform(data[['equipped_kitchen']])
         data=data.drop('equipped_kitchen',axis=1)
 
         #Encoding the state of building field
         data['state_building']=data['state_of_building']
-        state_encoder = joblib.load(filename='./models/state_building_ordinal.pkl')
+        state_encoder = joblib.load(filename='../models/state_building_ordinal.pkl')
         data['state_of_building']=state_encoder.transform(data[['state_building']])
         data=data.drop('state_building',axis=1)
         
         #One hot encoding nominal fields-prop type, sub prop type, locality, etc
         categorical_columns=['property_type','locality','subproperty_type','heating_type']
-        ohencoder = joblib.load(filename='./models/one_hot.pkl')
+        ohencoder = joblib.load(filename='../models/one_hot.pkl')
         one_hot_encoded = ohencoder.transform(data[categorical_columns])
         one_hot_df = pd.DataFrame(one_hot_encoded, columns=ohencoder.get_feature_names_out(categorical_columns))
 
@@ -71,13 +71,13 @@ def pre_process_cat(data):
         
     #Encoding the kitchen field
     data['equipped_kitchen']=data['kitchen_type']
-    kit_encoder = joblib.load(filename='./models/kitchen_ordinal.pkl')
+    kit_encoder = joblib.load(filename='../models/kitchen_ordinal.pkl')
     data['kitchen_type']=kit_encoder.transform(data[['equipped_kitchen']])
     data=data.drop('equipped_kitchen',axis=1)
 
     #Encoding the state of building field
     data['state_building']=data['state_of_building']
-    state_encoder = joblib.load(filename='./models/state_building_ordinal.pkl')
+    state_encoder = joblib.load(filename='../models/state_building_ordinal.pkl')
     data['state_of_building']=state_encoder.transform(data[['state_building']])
     data=data.drop('state_building',axis=1)
     
