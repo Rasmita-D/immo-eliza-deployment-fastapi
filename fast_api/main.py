@@ -8,6 +8,7 @@ app = FastAPI()
 
 
 class Item(BaseModel):
+    model:str
     property_type:str
     subproperty_type:str
     locality:str
@@ -29,11 +30,30 @@ class Item(BaseModel):
 
 @app.post("/get_price/")
 async def read_values(item:Item):
-    data=pd.DataFrame(item.model_dump(),index=[0])
-    model=joblib.load(filename='./models/cat_boost.pkl')
-    processed=pre_process_cat(data)
-    p=model.predict(processed[model.feature_names_])
-    return {"price":p[0]}
+    body=item.model_dump()
+    model=body["model"]
+    del body["model"]
+    data=pd.DataFrame(body,index=[0])
+        
+    if model=="cat_boost":
+        model=joblib.load(filename='./models/cat_boost.pkl')
+        processed=pre_process_cat(data)
+        p=model.predict(processed[model.feature_names_])
+    
+    elif model=="linear":
+        model=joblib.load(filename='./models/linear_regression.pkl')
+        processed=pre_process_predict(data)
+        p=model.predict(processed)
+
+    elif model=="random_forest":
+        model=joblib.load(filename='./models/random_forest.pkl')
+        processed=pre_process_predict(data)
+        p=model.predict(processed)
+    
+    else:
+         return{"error":"Invalid model selected, please use random_forest, linear or cat_boost"}
+    
+    return {"price":round(p[0],2)}
  
 
 
@@ -60,6 +80,13 @@ def pre_process_predict(data):
         # Concatenate the one-hot encoded dataframe with the original dataframe
         df_encoded = pd.concat([data, one_hot_df.set_axis(data.index)], axis=1)
 
+        #Condensing features
+        df_encoded['extra_features']=df_encoded['fl_swimming_pool']+df_encoded['fl_open_fire']+df_encoded['fl_double_glazing']+df_encoded['fl_furnished']
+        df_encoded=df_encoded.drop(columns=['fl_swimming_pool','fl_furnished','fl_open_fire','fl_double_glazing'])
+
+        #Scaling construction year
+        df_encoded['construction_year']=2024-df_encoded['construction_year']
+
         # Drop the original categorical columns
         df_encoded = df_encoded.drop(categorical_columns, axis=1)
         df_encoded = df_encoded[sorted(df_encoded.columns)]
@@ -69,17 +96,23 @@ def pre_process_predict(data):
 def pre_process_cat(data):
         
         
-    #Encoding the kitchen field
-    data['equipped_kitchen']=data['kitchen_type']
-    kit_encoder = joblib.load(filename='./models/kitchen_ordinal.pkl')
-    data['kitchen_type']=kit_encoder.transform(data[['equipped_kitchen']])
-    data=data.drop('equipped_kitchen',axis=1)
+        #Encoding the kitchen field
+        data['equipped_kitchen']=data['kitchen_type']
+        kit_encoder = joblib.load(filename='./models/kitchen_ordinal.pkl')
+        data['kitchen_type']=kit_encoder.transform(data[['equipped_kitchen']])
+        data=data.drop('equipped_kitchen',axis=1)
 
-    #Encoding the state of building field
-    data['state_building']=data['state_of_building']
-    state_encoder = joblib.load(filename='./models/state_building_ordinal.pkl')
-    data['state_of_building']=state_encoder.transform(data[['state_building']])
-    data=data.drop('state_building',axis=1)
-    
+        #Encoding the state of building field
+        data['state_building']=data['state_of_building']
+        state_encoder = joblib.load(filename='./models/state_building_ordinal.pkl')
+        data['state_of_building']=state_encoder.transform(data[['state_building']])
+        data=data.drop('state_building',axis=1)
+        
+        #Condensing features
+        data['extra_features']=data['fl_swimming_pool']+data['fl_open_fire']+data['fl_double_glazing']+data['fl_furnished']
+        data=data.drop(columns=['fl_swimming_pool','fl_furnished','fl_open_fire','fl_double_glazing'])
+        
+        #Scaling construction year
+        data['construction_year']=2024-data['construction_year']
 
-    return data
+        return data
