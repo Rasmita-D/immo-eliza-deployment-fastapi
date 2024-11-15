@@ -1,5 +1,3 @@
-# immo-eliza-deployment
-
 ## :classical_building: Description
 This project features 2 modes of deployments for the models built in the ML phase. The first is by api and the second is by using a web app. 
 
